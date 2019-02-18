@@ -27,16 +27,34 @@ export default {
   },
   methods: {
     // 登录请求
-    handlelogin () {
-        this.$http
-        .post(`http://localhost:8888/api/private/v1/login`,this.formdata)
-        .then((res) => {
+    async handlelogin () {
+        const res = await this.$http
+        .post(`login`,this.formdata);
+        
           console.log(res)
-        //   console.log(res.data);
-        }).catch(err=>{
-            console.log(err);
+        //   拿到响应数据 解构赋值
+            const {data:{
+                data:{token},   //这行代码相当于从res中取到token，并解构赋值token=res.data.token
+                meta:{msg,status}
+                }} = res
+                // 判断状态码为200 此时的状态吗是msg中的status
+            if(status === 200){
+            // console.log("login---success");
+            // 找到路由配置中名字是home
+            // 通过编程式导航修改路由
+            localStorage.setItem("token",token)
+            this.$router.push({
+                name:'home'
+            });
+            } else {
+            console.log("error---");
+            this.$message.error(msg);
+            }
+            // 若没有找到loin组件
+        // catch(err=>{
+        //     console.log(err);
             
-        })
+        
     }
   }
 }
