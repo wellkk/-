@@ -30,12 +30,24 @@
       <!-- 过滤器 fmtdate -->
       <el-table-column label="创建日期">
         <template slot-scope="scope">
+          <!-- 单元格内容不是prop值 -->
           {{scope.row.create_time|fmtdate}}
         </template>
-      </el-table-column> 
-      <el-table-column prop="address" label="用户状态">
       </el-table-column>
-      <el-table-column prop="address" label="操作">
+      <el-table-column label="用户状态">
+        <template slot-scope="scope">
+          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949">
+          </el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-row>
+            <el-button type="primary" icon="el-icon-edit" circle size="mini" plain></el-button>
+            <el-button type="danger" icon="el-icon-delete" circle size="mini" plain></el-button>
+            <el-button type="success" icon="el-icon-check" circle size="mini" plain></el-button>
+          </el-row>
+        </template>
       </el-table-column>
     </el-table>
     <!-- 分页 -->
