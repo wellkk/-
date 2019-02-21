@@ -81,10 +81,15 @@ export default {
   methods: {
     // 分页方法
      handleSizeChange(val) {
+       this.pagenum = 1;
         console.log(`每页 ${val} 条`);
+        this.pagesize = val;
+        this.getTableData();
       },
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
+         this.pagenum = val;
+         this.getTableData();
       },
     //   获取表单数据方法
     async getTableData() {
