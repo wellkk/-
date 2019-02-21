@@ -36,7 +36,7 @@
       </el-table-column>
       <el-table-column label="用户状态">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949">
+          <el-switch @change="changeState(scope.row)" v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949">
           </el-switch>
         </template>
       </el-table-column>
@@ -45,7 +45,7 @@
           <el-row>
             <el-button @click="showDiaEditUser(scope.row)" type="primary" icon="el-icon-edit" circle size="mini" plain></el-button>
             <el-button @click="showMsgBox(scope.row)" type="danger" icon="el-icon-delete" circle size="mini" plain></el-button>
-            <el-button type="success" icon="el-icon-check" circle size="mini" plain></el-button>
+            <el-button @click="showDiaSetRole()" type="success" icon="el-icon-check" circle size="mini" plain></el-button>
           </el-row>
         </template>
       </el-table-column>
@@ -93,6 +93,27 @@
         <el-button type="primary" @click="editUser()">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 对话框 - 角色 -->
+    <el-dialog title="分配角色" :visible.sync="dialogFormVisibleRole">
+      <el-form :model="formdata" label-position="left" label-width="80px">
+        <el-form-item label="用户名">
+          {{formdata.username}}
+        </el-form-item>
+        <el-form-item label="角色">
+          <el-select v-model="selectVal" placeholder="请选择角色名称">
+            <el-option label="请选择" disabled="" value="shanghai"></el-option>
+            <!-- v-for遍历所有角色 动态生成 -->
+            <el-option label="区域二" value="beijing"></el-option>
+
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleRole = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisibleRole = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 
 </template>
@@ -116,26 +137,48 @@ export default {
         email: "",
         mobile: ""
       },
-      dialogFormVisibleEdit: false
+      dialogFormVisibleEdit: false,
+      dialogFormVisibleRole: false,
+      selectVal: 1
     };
   },
   created() {
     this.getTableData();
   },
   methods: {
+    // 分配角色 - 显示对话框
+    showDiaSetRole() {
+      this.dialogFormVisibleRole = true;
+    },
+    // 用户状态
+    async changeState(user) {
+      // console.log(user);
+
+      const res = await this.$http.put(
+        `users/${user.id}/state/${user.mg_state}`
+      );
+      // console.log(res);
+      const { meta: { status, msg } } = res.data;
+      if (status === 200) {
+        this.$message.success("修改用户状态成功");
+      }
+    },
     // 编辑用户 - 发送请求
     async editUser() {
-      const res = await this.$http.put(`users/${this.formdata.id}`,this.formdata);
-      console.log(res);
-      const {meta:{msg,status}} = res.data;
-      if(status === 200) {
+      const res = await this.$http.put(
+        `users/${this.formdata.id}`,
+        this.formdata
+      );
+      // console.log(res);
+      const { meta: { msg, status } } = res.data;
+      if (status === 200) {
         // 刷新表格
         this.getTableData();
         // 关闭表格
         this.dialogFormVisibleEdit = false;
-    }
-      },
-      
+      }
+    },
+
     // 编辑用户 - 显示对话框
     showDiaEditUser(user) {
       this.dialogFormVisibleEdit = true;
@@ -155,7 +198,7 @@ export default {
         .then(async () => {
           // 发送删除请求
           const res = await this.$http.delete(`users/${user.id}`);
-          console.log(res);
+          // console.log(res);
           const { meta: { msg, status } } = res.data;
           if (status === 200) {
             this.$message.success("删除成功!");
@@ -171,7 +214,7 @@ export default {
     async addUser() {
       // 发送请求
       const res = await this.$http.post(`users`, this.formdata);
-      console.log(res);
+      // console.log(res);
 
       // 关闭对话框
       this.dialogFormVisibleAdd = false;
@@ -215,7 +258,7 @@ export default {
           this.pagesize
         }`
       );
-      console.log(res);
+      // console.log(res);
       const { data, meta: { msg, status } } = res.data;
       if (status === 200) {
         this.total = data.total;
