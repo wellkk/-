@@ -10,8 +10,8 @@
     <!-- 搜索框 -->
     <el-row>
       <el-col class="searchBox">
-        <el-input placeholder="请输入内容" v-model="query" class="searchInput">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-input @clear="getAllUsers()" clearable placeholder="请输入内容" v-model="query" class="searchInput">
+          <el-button @click="searchUser()" slot="append" icon="el-icon-search"></el-button>
         </el-input>
         <el-button type="primary">添加用户</el-button>
       </el-col>
@@ -79,6 +79,16 @@ export default {
     this.getTableData();
   },
   methods: {
+    // 清空查询内容--给input添加属性clearble,再加载所有用户
+    getAllUsers(){
+      this.getTableData();
+    },
+    // 查询用户
+    searchUser(){
+      this.pagenum = 1;
+      // query是双向绑定，参数在getTableData中
+      this.getTableData();
+    },
     // 分页方法
      handleSizeChange(val) {
        this.pagenum = 1;
