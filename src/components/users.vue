@@ -45,7 +45,7 @@
           <el-row>
             <el-button @click="showDiaEditUser(scope.row)" type="primary" icon="el-icon-edit" circle size="mini" plain></el-button>
             <el-button @click="showMsgBox(scope.row)" type="danger" icon="el-icon-delete" circle size="mini" plain></el-button>
-            <el-button @click="showDiaSetRole()" type="success" icon="el-icon-check" circle size="mini" plain></el-button>
+            <el-button @click="showDiaSetRole(scope.row)" type="success" icon="el-icon-check" circle size="mini" plain></el-button>
           </el-row>
         </template>
       </el-table-column>
@@ -102,16 +102,16 @@
         </el-form-item>
         <el-form-item label="角色">
           <el-select v-model="selectVal" placeholder="请选择角色名称">
-            <el-option label="请选择" disabled="" value="shanghai"></el-option>
+            <el-option label="请选择" disabled="" :value="1"></el-option>
             <!-- v-for遍历所有角色 动态生成 -->
-            <el-option label="区域二" value="beijing"></el-option>
+            <el-option v-for="(item,i) in roles" :key="item.id" :label="item.roleName" :value="item.id"></el-option>
 
           </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleRole = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisibleRole = false">确 定</el-button>
+        <el-button type="primary" @click="setRole()">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -125,7 +125,7 @@ export default {
       query: "",
       list: [],
       // 当前页码
-      pagenum: 2,
+      pagenum: 1,
       pagesize: 2,
       total: 10,
       // 对话框显示与隐藏属性
@@ -139,16 +139,53 @@ export default {
       },
       dialogFormVisibleEdit: false,
       dialogFormVisibleRole: false,
-      selectVal: 1
+      selectVal: 1,
+      roles: [],
+      currUserId: 1
     };
   },
   created() {
     this.getTableData();
   },
   methods: {
+    // 分配角色
+    async setRole() {
+      // 发送请求
+      const res = await this.$http.put(`users/${this.currUserId}/role`, {
+        rid: this.selectVal
+      });
+      console.log(res);
+      const { data, meta: { msg, status } } = res.data;
+      if (status === 200) {
+        // 关闭对话框
+        this.$message.success(msg);
+        this.dialogFormVisibleRole = false;
+      }
+    },
+
     // 分配角色 - 显示对话框
-    showDiaSetRole() {
+    async showDiaSetRole(user) {
+      // 给用户名赋值
+      this.formdata = user;
+      // 获取用户id给下一个方法 - 分配角色 使用
+      this.currUserId = user.id;
       this.dialogFormVisibleRole = true;
+      const res = await this.$http.get(`roles`);
+      console.log(res);
+      const { meta: { msg, status }, data } = res.data;
+      if (status === 200) {
+        // 获取data中角色信息  把数据赋值给v-for遍历
+        this.roles = data;
+        // console.log(this.roles);
+
+        // 获取当前用户的角色
+        const res2 = await this.$http.get(`users/${user.id}`);
+        // console.log(res2);
+        // const {data,meta:{msg,status}} = res2.data;
+        // if(status === 200){
+        this.selectVal = res2.data.data.rid;
+        // }
+      }
     },
     // 用户状态
     async changeState(user) {
