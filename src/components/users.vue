@@ -287,9 +287,9 @@ export default {
     },
     //   获取表单数据方法
     async getTableData() {
-      const AUTH_TOKEN = localStorage.getItem("token");
+      // const AUTH_TOKEN = localStorage.getItem("token");
       // console.log(AUTH_TOKEN);
-      this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+      // this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
       const res = await this.$http.get(
         `users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${
           this.pagesize

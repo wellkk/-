@@ -40,9 +40,9 @@ export default {
   methods: {
     // 获取表格数据
     async getTableData() {
-      const AUTH_TOKEN = localStorage.getItem("token");
+    //   const AUTH_TOKEN = localStorage.getItem("token");
       // console.log(AUTH_TOKEN);
-      this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+    //   this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
       const res = await this.$http.get(`rights/list`);
       //   console.log(res);
       // 解构 - 取值
