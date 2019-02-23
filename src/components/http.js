@@ -10,7 +10,8 @@ HttpServer.install = function (Vue) {
     console.log("拦截器被触发---");
     if(config.url !== 'login'){
         const AUTH_TOKEN = localStorage.getItem("token");
-        axios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+        // 给当前请求设置请求头
+        config.headers["Authorization"] = AUTH_TOKEN;
     }
     return config;
     
