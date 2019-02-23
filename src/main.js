@@ -5,16 +5,14 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/assets/css/base.css'
 import App from './App'
+// 引入公共组件面包屑
 import CusBread from '@/components/cusBread.vue'
 import router from './router'
-// 引入公共组件面包屑
-import axios from 'axios'
 import moment from 'moment'
-
-axios.defaults.baseURL = 'http://localhost:8888/api/private/v1/'
-Vue.prototype.$http = axios
+import HttpServer from './components/http.js'
 Vue.config.productionTip = false
 Vue.use(ElementUI)
+Vue.use(HttpServer)
 /* eslint-disable no-new */
 Vue.filter('fmtdate',(v) => {
   return moment(v).format('YYYY-MM-DD')
