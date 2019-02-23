@@ -35,7 +35,7 @@
               <i class="el-icon-location"></i>
               <span>权限管理</span>
             </template>
-            <el-menu-item index="1-1">
+            <el-menu-item index="rights">
               <i class="el-icon-menu"></i>
               权限列表</el-menu-item>
             <el-menu-item index="1-1">
