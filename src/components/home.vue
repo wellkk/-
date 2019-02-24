@@ -124,9 +124,6 @@ export default {
   text-align: center;
   line-height: 60px;
 }
-.aside {
-  /* background-color: red; */
-}
 .main {
   background-color: gray;
 }
