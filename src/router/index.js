@@ -36,20 +36,20 @@ const router = new Router({
         name: 'goodsadd',
         path: '/goodsadd',
         component: GoodsAdd
-      }
-      ]
-    },
-    {
-      name: 'login',
-      path: '/login',
-      component: Login
-    },
+      },
     {
       name: 'goods',
       path: '/goods',
       component: GoodsList
     }
     
+      ]
+    },
+    {
+      name: 'login',
+      path: '/login',
+      component: Login
+    }
   ]
 })
 router.beforeEach((to,from,next) => {
