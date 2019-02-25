@@ -19,14 +19,14 @@
       <el-aside class="aside" width="200px">
         <el-menu default-active="1" :router="true" :unique-opened="true">
           <!-- 用户管理 -->
-          <el-submenu index="1">
-            <template slot="title" v-for="(item1)">
+          <el-submenu v-for="(item1,i) in menus" :key="item1.id" :index="item1.order+''">
+            <template slot="title">
               <i class="el-icon-location"></i>
-              <span>用户管理</span>
+              <span>{{item1.authName}}</span>
             </template>
-            <el-menu-item index="users">
+            <el-menu-item  v-for="(item2,i) in item1.children" :key="item2.id" :index="item2.path+''">
               <i class="el-icon-menu"></i>
-              用户列表</el-menu-item>
+              {{item2.authName}}</el-menu-item>
           </el-submenu>
 
           <!-- 权限管理 -->
@@ -92,27 +92,45 @@
 
 <script>
 export default {
-  beforeMount() {
-    if (!localStorage.getItem('token')) {
-      this.$router.push({
-        name: 'login'
-      })
-    }
+  data() {
+    return {
+      menus: []
+    };
   },
-  methods:{
+  beforeMount() {
+    // if (!localStorage.getItem("token")) {
+    //   this.$router.push({
+    //     name: "login"
+    //   });
+    // }
+  },
+  created() {
+    this.getMenus();
+  },
+  methods: {
+    // 获取侧边栏
+    async getMenus() {
+      const res = await this.$http.get(`menus`);
+      const { data, meta: { msg, status } } = res.data;
+      if (status === 200) {
+        // 渲染侧边栏
+        this.menus = data;
+        console.log(this.menus);
+      }
+    },
     // 退出登录
-    handleLogout(){
+    handleLogout() {
       // 清除token
       localStorage.clear();
       // 跳转到login
       this.$router.push({
-        name:'login'
+        name: "login"
       });
-    // 提示
-    this.$message.warning('退出成功')
+      // 提示
+      this.$message.warning("退出成功");
     }
   }
-}
+};
 </script>
 
 <style>
